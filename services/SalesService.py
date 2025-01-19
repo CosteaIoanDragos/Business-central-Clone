@@ -14,7 +14,14 @@ class SalesService:
         self.customer_repo = CustomerRepository()
         self.inventory_repo = InventoryRepository()
         self.sales_repo = SalesRepository()
-
+    def cleanup(self):  
+        self.customer_repo.stop_auto_save() 
+        self.customer_repo.save_to_db() 
+        self.inventory_repo.stop_auto_save() 
+        self.inventory_repo.save_to_db() 
+        self.sales_repo.stop_auto_save() 
+        self.sales_repo.save_to_db()
+        
     def create_customer(self, customer_id, name, email, address):
         customer_id=self.customer_repo.get_next_id()
         customer = Customer(customer_id, name, email, address)
@@ -155,11 +162,13 @@ class SalesService:
     #invetory should be updated when a sale is made
     def transform_quote_to_order(self, sales_id):
         sale = self.get_sales_by_id(sales_id)
-        print('hello',sale)
         if sale.salestype == SalesType.QUOTE:
             sale.salestype = SalesType.ORDER
             item=self.get_inventory_by_id(sale.item_id)
-            self.update_inventory(sale.item_id,item.name, item.nr-sale.quantity,item.price,item.type)
+            updatedQuantity=item.nr-sale.quantity
+            print(updatedQuantity)
+            self.update_inventory(sale.item_id,item.name, updatedQuantity,item.price,item.type)
+            print(self.get_all_inventory())
             return sale
         return None
     

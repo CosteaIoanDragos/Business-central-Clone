@@ -105,7 +105,7 @@ def ServiceTest():
     item2 = service.create_inventory_item(2, "Desk Chair", 25, 79.99, "Furniture")
 
     # Create sales items
-    sale1 = service.create_sales(1, customer1.customer_id, item1.inventory_id, SalesType.QUOTE,5)
+    sale1 = service.create_sales(1, customer1.customer_id, item1.inventory_id, SalesType.QUOTE,10)
     sale2 = service.create_sales(2, customer2.customer_id, item2.inventory_id, SalesType.ORDER,3)
 
     # Read and display all customers, inventory, and sales
@@ -126,12 +126,20 @@ def ServiceTest():
 from Ui.CustomerList import CustomerList
 import tkinter as tk
 from Ui.RoleCenter import RoleCenter
-
+def on_closing(service): 
+    service.cleanup() 
+    root.destroy()
 if __name__ == "__main__":
     # InventoryTest()
     # CustomerTest()
     # SalesTest()
-    service=ServiceTest()
+    service = SalesService()  # Use SalesService instead of ServiceTest
     root = tk.Tk()
     app = RoleCenter(root, service)
+
+    # Bind the stop_auto_save and save_to_db methods to the window close event
+    root.protocol("WM_DELETE_WINDOW", lambda: on_closing(service))
+
     root.mainloop()
+
+    #database

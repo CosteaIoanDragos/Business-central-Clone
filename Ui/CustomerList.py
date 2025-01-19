@@ -148,9 +148,29 @@ class CustomerList:
             email = fields["Email"].get()
             address = fields["Address"].get()
 
+            # Check if all fields are filled
             if not name or not email or not address:
                 messagebox.showwarning("Input Error", "All fields must be filled in.")
                 return
+
+            # Validate the name (if it should only contain alphabetic characters)
+            if not name.isalpha() and not name.replace(" ", "").isalpha():
+                messagebox.showwarning("Input Error", "Name must only contain letters and spaces.")
+                return
+
+            # Validate email format using regex
+            email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+            if not re.match(email_regex, email):
+                messagebox.showwarning("Input Error", "Invalid email format.")
+                return
+
+            # Optionally validate address (e.g., length check)
+            if len(address) < 10:
+                messagebox.showwarning("Input Error", "Address must be at least 10 characters long.")
+                return
+
+            # If all validations pass, proceed with saving the customer
+            messagebox.showinfo("Success", "Customer details saved successfully.")
 
             new_customer = self.service.create_customer(None, name, email, address)
             dialog.destroy()
@@ -186,6 +206,25 @@ class CustomerList:
             if not name or not email or not address:
                 messagebox.showwarning("Input Error", "All fields must be filled in.")
                 return
+
+            # Validate the name (if it should only contain alphabetic characters)
+            if not name.isalpha() and not name.replace(" ", "").isalpha():
+                messagebox.showwarning("Input Error", "Name must only contain letters and spaces.")
+                return
+
+            # Validate email format using regex
+            email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+            if not re.match(email_regex, email):
+                messagebox.showwarning("Input Error", "Invalid email format.")
+                return
+
+            # Optionally validate address (e.g., length check)
+            if len(address) < 10:
+                messagebox.showwarning("Input Error", "Address must be at least 10 characters long.")
+                return
+
+            # If all validations pass, proceed with saving the customer
+            messagebox.showinfo("Success", "Customer details saved successfully.")
 
             self.service.update_customer(customer_id, name, email, address)
             dialog.destroy()

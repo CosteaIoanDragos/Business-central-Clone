@@ -162,12 +162,34 @@ class ItemList:
         def save_item():
             name = entry_name.get()
             price = entry_price.get()
-            quantity = int(entry_quantity.get())
+            quantity = entry_quantity.get()
             item_type = entry_type.get()
-
             if not name or not price or not quantity or not item_type:
                 messagebox.showwarning("Input Error", "All fields must be filled in.")
                 return
+
+            if not name.isalpha():
+                messagebox.showwarning("Input Error", "Name must only contain letters.")
+                return
+
+            try:
+                price = float(price)
+                if price <= 0:
+                    messagebox.showwarning("Input Error", "Price must be a positive number.")
+                    return
+            except ValueError:
+                messagebox.showwarning("Input Error", "Price must be a valid number.")
+                return
+
+            try:
+                quantity = int(quantity)
+                if quantity <= 0:
+                    messagebox.showwarning("Input Error", "Quantity must be a positive integer.")
+                    return
+            except ValueError:
+                messagebox.showwarning("Input Error", "Quantity must be a valid integer.")
+                return
+            messagebox.showinfo("Success", "Item saved successfully!")
             new_item = self.service.create_inventory_item(None, name,  int(quantity),float(price), item_type)
             dialog.destroy()
             self.refresh_item_list()
@@ -202,7 +224,7 @@ class ItemList:
         entry_type = ttk.Entry(dialog)
         entry_type.grid(row=4, column=1, padx=10, pady=10)
 
-        item = self.service.get_item_by_id(item_id)
+        item = self.service.get_inventory_by_id(item_id)
         entry_name.insert(0, item.name)
         entry_price.insert(0, str(item.price))
         entry_quantity.insert(0, str(item.nr))
@@ -217,7 +239,31 @@ class ItemList:
             if not name or not price or not quantity or not item_type:
                 messagebox.showwarning("Input Error", "All fields must be filled in.")
                 return
-            self.service.update_inventory_item(item_id, name, float(price), int(quantity), item_type)
+
+            if not name.isalpha():
+                messagebox.showwarning("Input Error", "Name must only contain letters.")
+                return
+
+            try:
+                price = float(price)
+                if price <= 0:
+                    messagebox.showwarning("Input Error", "Price must be a positive number.")
+                    return
+            except ValueError:
+                messagebox.showwarning("Input Error", "Price must be a valid number.")
+                return
+
+            try:
+                quantity = int(quantity)
+                if quantity <= 0:
+                    messagebox.showwarning("Input Error", "Quantity must be a positive integer.")
+                    return
+            except ValueError:
+                messagebox.showwarning("Input Error", "Quantity must be a valid integer.")
+                return
+            messagebox.showinfo("Success", "Item saved successfully!")
+
+            self.service.update_inventory(item_id, name,  int(quantity),float(price), item_type)
             dialog.destroy()
             self.refresh_item_list()
 
